@@ -91,3 +91,21 @@ def getRecommendations(prefs, person, similarity=sim_pearson):
     rankings.sort()
     rankings.reverse()
     return rankings
+
+
+# ディクショナリprefsからpersonにもっともマッチするものたちを返す。
+def topMatches(prefs, person, n=5, similarity=sim_pearson):
+    scores=[(similarity(prefs, person, other), other) for other in prefs if other != person]
+    #高スコアがリストの最初に来るように並び替える
+    scores.sort()
+    scores.reverse()
+    return scores[0:n]
+
+def transformPrefs(prefs):
+    result={}
+    for person in prefs:
+        for item in prefs[person]:
+            result.setdefault(item, {})
+            # itemとpersonを入れ替える
+            result[item][person] = prefs[person][item]
+    return result
