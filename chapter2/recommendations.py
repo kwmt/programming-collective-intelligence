@@ -157,3 +157,12 @@ def loadMovieLens(path='data/movielens'):
         prefs.setdefault(user, {})
         prefs[user][movies[movieid]] = float(rating)
     return prefs
+
+def sim_tanimoto(prefs, x, y):
+    subset = set(prefs[x].keys()).intersection(prefs[y].keys())
+
+    c = len(subset)
+    if c == 0: return 0
+
+    tanimoto = float(c) / (len(prefs[x]) + len(prefs[y] - c))
+    return tanimoto
