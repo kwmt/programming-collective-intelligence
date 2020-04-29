@@ -164,5 +164,5 @@ def sim_tanimoto(prefs, x, y):
     c = len(subset)
     if c == 0: return 0
 
-    tanimoto = float(c) / (len(prefs[x]) + len(prefs[y] - c))
+    tanimoto = float(c) / ((len(prefs[x]) + len(prefs[y]) - c))
     return tanimoto
