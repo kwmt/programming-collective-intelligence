@@ -142,3 +142,18 @@ def getRecommendedItems(prefs, itemMatch, user):
     rankings.sort()
     rankings.reverse()
     return rankings
+
+def loadMovieLens(path='data/movielens'):
+    # 映画のタイトルを取得
+    movies = {}
+
+    for line in open(f'{path}/u.item',encoding = "ISO-8859-1"):
+        (id, title) = line.split('|')[0:2]
+        movies[id] = title
+
+    prefs = {}
+    for line in open(f'{path}/u.data', encoding = "ISO-8859-1"):
+        (user ,movieid, rating, ts) = line.split('\t')
+        prefs.setdefault(user, {})
+        prefs[user][movies[movieid]] = float(rating)
+    return prefs

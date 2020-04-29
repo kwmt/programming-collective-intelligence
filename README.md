@@ -135,3 +135,36 @@ sim_distance関数をを実装
 ### 推薦を行う
 
 アイテムの類似性データセットは予め計算されているため、他の評価者たち類似性スコアを計算する必要がない点に注目。
+
+## MovieLensのデータセットを使う
+
+movielensの生データからデータセットを作成
+
+```
+>> prefs=loadMovieLens()
+>>> prefs['87']
+{'Naked Gun 33 1/3: The Final Insult (1994)': 4.0, 'Con Air (1997)': 4.0, 'Sabrina (1995)': 4.0, 'Waterworld (1995)': 4.0, 'To Wong Foo, Thanks for Everything! Julie Newmar (1995)': 3.0, 'Clueless (1995)': 4.0, 'Jurassic Park (1993)': 5.0, 'Brady Bunch Movie, The (1995)': 2.0, 'Son in Law (1993)': 4.0, 'Indiana Jones and the Last Crusade (1989)': 5.0, 'Good, The Bad and The Ugly, The (1966)': 5.0, 'Dead Poets Society (1989)': 5.0, 'Dead M
+```
+
+ユーザーベースの推薦は少し時間がかかる
+
+```
+>> getRecommendations(prefs, '87')[0:30]
+[(5.0, 'They Made Me a Criminal (1939)'), (5.0, 'Star Kid (1997)'), (5.0, 'Santa with Muscles (1996)'), (5.0, 'Saint of Fort Washington, The (1993)'), (5.0, 'Marlene Dietrich: Shadow and Light (1996) '), (5.0, 'Great Day in Harlem, A (1994)'), (5
+```
+
+アイテムベースだと、最初の計算に時間かかるが、作ってしまえば、推薦は一瞬。ユーザーが増えても推薦にかかる時間は増えない。
+
+```
+>>> itemsim=calculateSimilarItems(prefs, n=50)
+100 / 1664
+200 / 1664
+600 / 1664
+>>> getRecommendedItems(prefs, itemsim, '87')[0:30]
+[(5.0, "What's Eating Gilbert Grape (1993)"), (5.0, 'Vertigo (1958)'), (5.0, 'Usual Suspects, The (1995)'), (5.0, 'Toy Story (1995)'), (5.0, 'Titanic (1997)'), (5.0, 'Sword in the Stone, The (1963)'), (5.0, 'Stand by Me (1986)'), (
+```
+
+## ユーザーベース vs アイテムベース
+
+- 疎なデータセットの場合、アイテムベースのフィルタリングの方が一般的にユーザーベースより性能がいい。
+- 密なデータセットの場合は、大体同等の性能
