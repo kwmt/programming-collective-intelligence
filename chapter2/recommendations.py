@@ -158,6 +158,7 @@ def loadMovieLens(path='data/movielens'):
         prefs[user][movies[movieid]] = float(rating)
     return prefs
 
+# 参考: http://tsundaowata.hatenablog.com/entry/2013/10/28/Tanimoto%E4%BF%82%E6%95%B0%E3%81%A3%E3%81%A6%E3%81%AA%E3%81%AB%E3%81%95%EF%BC%9F
 def sim_tanimoto(prefs, x, y):
     subset = set(prefs[x].keys()).intersection(prefs[y].keys())
 
