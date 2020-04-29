@@ -62,3 +62,32 @@ def sim_pearson(prefs, p1, p2):
 
     r = num / den
     return r
+
+
+def getRecommendations(prefs, person, similarity=sim_pearson):
+    totals={}
+    simSums={}
+    for other in prefs:
+        # 自分自身とは比較しない
+        if other==person: continue
+        sim = similarity(prefs, person, other)
+        # 0以下のスコアは無視する
+        if sim <= 0: continue
+
+        for item in prefs[other]:
+            # まだ見ていない映画の得点のみを算出
+            if item not in prefs[person] or prefs[person][item] == 0:
+                # 類似度 * スコア
+                totals.setdefault(item, 0)
+                totals[item] += prefs[other][item] * sim
+                # 類似度を合計
+                simSums.setdefault(item, 0)
+                simSums[item] += sim
+
+    # 正規化したリストを作る
+    rankings = [(total/simSums[item], item) for item, total in totals.items()]
+
+    # ソート済みのリストを返す
+    rankings.sort()
+    rankings.reverse()
+    return rankings
