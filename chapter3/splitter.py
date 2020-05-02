@@ -19,7 +19,7 @@ def split(sentence, appid= appId, results= 'ma', filter='1|2|4|5|9|10'):
     sentence=urllib.parse.quote_plus(sentence.encode('utf-8'))
     query= f"{pageUrl}?appid={appid}&results={results}&uniq_filter={filter}&sentence={sentence}"
     result = urlopen(query)
-    soup = BeautifulSoup(result)
+    soup = BeautifulSoup(result, 'html.parser')
 
     try:
         return [l.surface.string for l in soup.ma_result.word_list]
