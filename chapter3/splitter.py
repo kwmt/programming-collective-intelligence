@@ -26,3 +26,11 @@ def split(sentence, appid= appId, results= 'ma', filter='1|2|4|5|9|10'):
     except: return[]
         
 
+def fetch_urls():
+    result = urlopen('https://note.com/')
+    soup = BeautifulSoup(result, 'html.parser')
+
+    links = [url.get('href') for url in soup.find_all('a')]
+    print(links)
+
+fetch_urls()

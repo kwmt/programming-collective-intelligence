@@ -22,6 +22,18 @@ def getwords(html):
     txt = re.compile(r'<[->]+>').sub('', html)
     return [word.lower() for word in splitter.split(txt) if word != '']
 
+
+def fetch_urls_data():
+    d = feedparser.parse('https://note.com/recommend/rss')
+    links = []
+
+    for e in d.entries:
+        if ('/n/' in e.link):
+            s = e.link.split('/n/')
+            links.append(f"{s[0]}/rss")
+
+    return '\n'.join(links)
+
 # サンプル
-result = getwordcounts('https://note.com/koukichi_t/rss')
-print(result)
+# result = getwordcounts('https://note.com/koukichi_t/rss')
+# print(fetch_urls_data())
