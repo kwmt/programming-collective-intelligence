@@ -41,3 +41,11 @@ def pearson(v1, v2):
     # ピアソン相関係数は２つのアイテムが完全に一致するときは1.0になり、逆は0.0に近くなる。
     # しかし今回はアイテム同士が似ていれば似ているほど小さい値を返したいので、1からピアソン相関係数を引いた数値を返している。
     return 1.0 - num / den
+
+class biclsuster:
+    def __init__(self, vec, left=None, right=None, distance=0.0, id=None):
+        self.left = left
+        self.right = right
+        self.vec = vec
+        self.id = id
+        self.distance = distance
