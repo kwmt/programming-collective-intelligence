@@ -1,4 +1,6 @@
 import csv
+from math import sqrt
+
 def readfile(filename):
     # タイトル(単語)
     colnames=[]
@@ -18,4 +20,24 @@ def readfile(filename):
     
     return rownames, colnames, data
 
-readfile('blogdata.csv')
+# ピアソン相関係数を求める
+def pearson(v1, v2):
+    # 単純な合計
+    sum1 = sum(v1)
+    sum2 = sum(v2)
+
+    # 平方の合計
+    sum1Sq = sum(pow(v, 2) for v in v1)
+    sum2Sq = sum(pow(v, 2) for v in v2)
+
+    # 積の合計
+    pSum = sum([v1[i]*v2[i] for i in  range(len(v2))])
+
+    # ピアソンによるスコアを算出
+    num = pSum - (sum1 * sum2 / len(v2))
+    den = sqrt((sum1Sq - pow(sum1, 2) / len(v1)) * (sum2Sq - pow(sum2, 2) / len(v2)))
+    if (den == 0): return 0
+
+    # ピアソン相関係数は２つのアイテムが完全に一致するときは1.0になり、逆は0.0に近くなる。
+    # しかし今回はアイテム同士が似ていれば似ているほど小さい値を返したいので、1からピアソン相関係数を引いた数値を返している。
+    return 1.0 - num / den
