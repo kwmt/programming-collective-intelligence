@@ -42,7 +42,7 @@ def pearson(v1, v2):
     # しかし今回はアイテム同士が似ていれば似ているほど小さい値を返したいので、1からピアソン相関係数を引いた数値を返している。
     return 1.0 - num / den
 
-class biclsuster:
+class bicluster:
     def __init__(self, vec, left=None, right=None, distance=0.0, id=None):
         self.left = left
         self.right = right
@@ -54,13 +54,15 @@ def hcluster(rows, distance=pearson):
     distances={}
     currentclustid=-1
 
+   
     # クラスタは最初は行たち
-    clust = [biclsuster(rows[i], id=i) for i in range(len(rows))]
+    clust = [bicluster(rows[i], id=i) for i in range(len(rows))]
 
 
     while(len(clust) > 1):
         lowestpair = (0, 1)
         closest = distance(clust[0].vec, clust[1].vec)
+        
 
         # すべての組をループし、もっとも距離の近い組を探す
         for i in range(len(clust)):
@@ -70,7 +72,7 @@ def hcluster(rows, distance=pearson):
                     distances[(clust[i].id, clust[j].id)] = distance(clust[i].vec, clust[j].vec)
                 
                 d = distances[(clust[i].id, clust[j].id)]
-
+                
                 if d < closest:
                     closest = d
                     lowestpair = (i, j)
@@ -81,10 +83,10 @@ def hcluster(rows, distance=pearson):
 
         
         #　新たにクラスタを作成
-        newcluster = biclsuster(mergevec, left=clust[lowestpair[0]],
+        newcluster = bicluster(mergevec, left=clust[lowestpair[0]],
                         right=clust[lowestpair[1]],
                         distance=closest,id=currentclustid)
-        
+        print(newcluster)
         # 元のセットではないクラスタのIDは負にする
         currentclustid = -1
         del clust[lowestpair[1]]
@@ -92,3 +94,22 @@ def hcluster(rows, distance=pearson):
         clust.append(newcluster)
 
     return clust[0]
+
+
+def printclust(clust, labels=None, n=0):
+    for i in range(n): print('\t'),
+    if clust.id<0:
+        print('-')
+
+    else:
+        if labels==None: print(clust.id)
+        else: print(labels[clust.id])
+
+    if clust.left != None: printclust(clust.left, labels=labels, n = n+1)
+    if clust.right != None: printclust(clust.right, labels=labels, n = n+1)
+
+
+blognames, words, data= readfile('blogdata.csv')
+clust=hcluster(data)
+
+printclust(clust, labels=blognames)
