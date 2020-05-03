@@ -37,12 +37,14 @@ def main():
     # 各URLの単語を計測
     apcount = {}
     wordcounts={}
-    feedlist = [
-        'https://note.com/mid_architecture/rss', 
-    # 'https://note.com/ynsmr/rss', 
-    'https://note.com/harukamano/rss',
-    'https://note.com/naffix/rss'
-    ] #[line for line in open('feedlist.txt')]
+    feedlist = [line for line in open('feedlist.txt')]
+    # [
+    #     'https://note.com/mid_architecture/rss', 
+    # # 'https://note.com/ynsmr/rss', 
+    # 'https://note.com/harukamano/rss',
+    # 'https://note.com/naffix/rss'
+    # ] 
+    
 
     for feedurl in feedlist:
         try:
