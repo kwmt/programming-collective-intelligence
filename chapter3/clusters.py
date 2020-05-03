@@ -1,7 +1,10 @@
 import csv
 def readfile(filename):
+    # タイトル(単語)
     colnames=[]
+    # ブログタイトル
     rownames = []
+    # 頻出度
     data = []
 
     with open(filename) as f:
