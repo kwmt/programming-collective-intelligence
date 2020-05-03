@@ -49,3 +49,46 @@ class biclsuster:
         self.vec = vec
         self.id = id
         self.distance = distance
+
+def hcluster(rows, distance=pearson):
+    distances={}
+    currentclustid=-1
+
+    # クラスタは最初は行たち
+    clust = [biclsuster(rows[i], id=i) for i in range(len(rows))]
+
+
+    while(len(clust) > 1):
+        lowestpair = (0, 1)
+        closest = distance(clust[0].vec, clust[1].vec)
+
+        # すべての組をループし、もっとも距離の近い組を探す
+        for i in range(len(clust)):
+            for j in range(i+1, len(clust)):
+                # 距離をキャッシュして、あればそれを使う
+                if (clust[i].id, clust[j].id) not in distances:
+                    distances[(clust[i].id, clust[j].id)] = distance(clust[i].vec, clust[j].vec)
+                
+                d = distances[(clust[i].id, clust[j].id)]
+
+                if d < closest:
+                    closest = d
+                    lowestpair = (i, j)
+        
+        # ２つのクラスタの平均を計算する
+        mergevec = [(clust[lowestpair[0]].vec[i] + clust[lowestpair[1]].vec[i])/ 2.0 
+            for i in range(len(clust[0].vec))]
+
+        
+        #　新たにクラスタを作成
+        newcluster = biclsuster(mergevec, left=clust[lowestpair[0]],
+                        right=clust[lowestpair[1]],
+                        distance=closest,id=currentclustid)
+        
+        # 元のセットではないクラスタのIDは負にする
+        currentclustid = -1
+        del clust[lowestpair[1]]
+        del clust[lowestpair[0]]
+        clust.append(newcluster)
+
+    return clust[0]
