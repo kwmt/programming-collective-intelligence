@@ -246,14 +246,22 @@ def scaledown(data, distance=pearson, rate= 0.01):
             loc[k][1] -= rate * grad[k][1]
     return loc
 
-
+def draw2d(data, labels, jpeg='mds2d.jpg'):
+    img = Image.new('RGB', (2000, 2000), (255,255,255))
+    draw = ImageDraw.Draw(img)
+    for i in range(len(data)):
+        x = (data[i][0]+0.5) * 1000
+        y = (data[i][1]+0.5) * 1000
+        fnt = ImageFont.truetype('./Kokoro.otf',30) #ImageFontインスタンスを作る
+        draw.text((x, y), labels[i], (0, 0, 0), font=fnt)
+    img.save(jpeg, 'JPEG')
 
 blognames, words, data= readfile('blogdata.csv')
 # clust=kcluster(data)
 # print(clust)
 
 coords = scaledown(data)
-print(coords)
+draw2d(coords, blognames, jpeg='blogs2d.jpg')
 
 # [print(blognames[r]) for r in clust[0]]
 # drawdendrogram(clust, blognames, jpeg='blogclust.jpg')
