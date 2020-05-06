@@ -200,12 +200,60 @@ def kcluster(rows, distance=pearson, k=4):
     
     return bestmatches
 
+# 多次元尺度構成法
+def scaledown(data, distance=pearson, rate= 0.01):
+    n = len(data)
+
+    # アイテムのすべての組の実際の距離（目標）
+    realdist = [[distance(data[i], data[j]) for j in range(n)] for i in range(0, n)]
+    
+    outersum = 0.0
+    # 2次元にランダムに配置するように初期化する
+    loc = [[random.random(), random.random()] for i in range(n)]
+    fakedist = [[0.0 for j in range(n)] for i in range(n)]
+
+    lasterror = None
+
+    for m in range(0, 1000):
+        # 予測距離を測る
+        for i in range(n):
+            for j in range(n):
+                fakedist[i][j] = sqrt(sum([pow(loc[i][x] - loc[j][x], 2) for x in range(len(loc[i]))]))
+
+        # ポイントの移動
+        grad=[[0.0, 0.0] for i in range(n)]
+
+        totalerror = 0
+
+        for k in range(n):
+            for j in range(n):
+                if j==k: continue
+                # 誤差は距離の差の百分率
+                errorterm = (fakedist[j][k] - realdist[j][k]) / realdist[j][k]
+
+                # 他のポイントへの誤差に比例してそれぞれのポイントを移動する
+                grad[k][0] += ((loc[k][0] - loc[j][0]) / fakedist[j][k]) * errorterm
+                grad[k][1] += ((loc[k][1] - loc[j][1]) / fakedist[j][k]) * errorterm
+
+                # 誤差の合計を記録
+                totalerror += abs(errorterm)
+        print(totalerror)
+
+        if lasterror and lasterror < totalerror: break
+
+        for k in range(n):
+            loc[k][0] -= rate * grad[k][0]
+            loc[k][1] -= rate * grad[k][1]
+    return loc
 
 
 
 blognames, words, data= readfile('blogdata.csv')
-clust=kcluster(data)
-print(clust)
+# clust=kcluster(data)
+# print(clust)
 
-[print(blognames[r]) for r in clust[0]]
+coords = scaledown(data)
+print(coords)
+
+# [print(blognames[r]) for r in clust[0]]
 # drawdendrogram(clust, blognames, jpeg='blogclust.jpg')
