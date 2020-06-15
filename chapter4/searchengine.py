@@ -1,17 +1,18 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import sqlite3
 
 class clawler:
     # データベースの名前でクローラを初期化
     def __init__(self, dbname):
-        pass
+        self.con = sqlite3.connect(dbname)
 
     def __del__(self):
-        pass
+        self.con.close()
 
     def dbcommit(self):
-        pass
+        self.con.commit()
 
     def getentryid(self, table, field, value, createnew=True):
         return None
