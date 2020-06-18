@@ -19,10 +19,15 @@ class clawler:
         self.con.commit()
 
     def getentryid(self, table, field, value, createnew=True):
-        cur = self.con.execute("select rowid from %s where %s='%s'" % (table, field, value))
+        query = 'select rowid from %s where %s=' % (table, field)
+        sql = query + '=?'
+        data = (value,)
+        cur = self.con.execute(sql, data)
         res = cur.fetchone()
         if res == None:
-            cur = self.con.execute("insert into %s (%s) values('%s')" % (table, field, value)) 
+            q = 'insert into %s (%s) values' % (table, field)
+            s = q + '(?)'
+            cur = self.con.execute(s, (value,))
             return cur.lastrowid
         else:
             return res[0]
@@ -72,7 +77,7 @@ class clawler:
             return []
     
     def isindexed(self, url):
-        u = self.con.execute("select rowid from urllist where url = '%s'" % url).fetchone()
+        u = self.con.execute('select rowid from urllist where url=?', (url, )).fetchone()
         if u != None:
             v = self.con.execute('select * from wordlocation where urlid=%d' % u[0]).fetchone()
             if v != None: return True
