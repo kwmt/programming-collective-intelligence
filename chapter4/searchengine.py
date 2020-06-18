@@ -29,7 +29,7 @@ class clawler:
 
     def addtoindex(self, url, soup):
         if self.isindexed(url): return
-        print(f"Indexing {url}")
+        # print(f"Indexing {url}")
 
         # 個々の単語を取得する
         text = self.gettextonly(soup)
@@ -38,11 +38,13 @@ class clawler:
         # URL idを取得する
         urlid = self.getentryid('urllist', 'url', url)
 
+        print(f"addtoindex urlid: {urlid}")
         # それぞれの単語と、このurlのリンク
         for i in range(len(words)):
             word = words[i]
             if word in ignorewords: continue
             wordid = self.getentryid('wordlist', 'word', word)
+            print(f"addtoindex:i: {i} worid: {wordid}")
             self.con.execute("insert into wordlocation(urlid, wordid, location)  \
                 values (%d, %d, %d)" % (urlid, wordid, i))
 
@@ -138,3 +140,5 @@ pagelist = ['https://kwmt27.net/']
 crawler = clawler('searchindex.db')
 # crawler.createindextables()
 crawler.crawl(pagelist)
+
+# [row for row in crawler.con.execute('select rowid from wordlocation where wordid=1')]
